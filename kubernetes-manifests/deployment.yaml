@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: usermanager
+  labels:
+    app: usermanager
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: usermanager
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: usermanager
+    spec:
+      containers:
+      - image: 566034038752.dkr.ecr.us-west-2.amazonaws.com/sykang/usermanager:latest
+        imagePullPolicy: Always
+        name: usermanager
