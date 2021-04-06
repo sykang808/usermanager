@@ -8,10 +8,10 @@ import json
 import logging
 logging.basicConfig(filename='debug.log',level=logging.DEBUG)
 from requests import status_codes
-BOOTSTRAP_SERVERS = ['sykang-kafka.default.svc.cluster.local:9092']
+BOOTSTRAP_SERVERS = ['b-2.microservice-kafka-2.6lxf1h.c6.kafka.us-west-2.amazonaws.com:9094','b-1.microservice-kafka-2.6lxf1h.c6.kafka.us-west-2.amazonaws.com:9094']
 
 class UserManager():
-    producer = KafkaProducer(acks=0, compression_type='gzip', bootstrap_servers='sykang-kafka-0.sykang-kafka-headless.default.svc.cluster.local:9092', value_serializer=lambda v: json.dumps(v, sort_keys=True).encode('utf-8'))  
+    producer = KafkaProducer(acks=0, compression_type='gzip',security_protocol="SSL" ,bootstrap_servers=BOOTSTRAP_SERVERS, value_serializer=lambda v: json.dumps(v, sort_keys=True).encode('utf-8')) 
     ret_fin = 0
     ret_message = ''
 
@@ -52,7 +52,7 @@ class UserManager():
     def kafka_listener(self, data):
     #   print("ordermanager:", data.value.decode("utf-8"))
         json_data = json.loads(data.value.decode("utf-8"))
-        url= 'http://flask-user-restapi:5050/user/' + str(json_data['customer_id'])       
+        url= 'http://flask-user-restapi.flask-user-restapi/user/' + str(json_data['customer_id'])       
         r = requests.get( url )
         
         if r.status_code != 200:
