@@ -6,6 +6,7 @@ metadata:
     app: usermanager
   namespace: default
 spec:
+  replicas: 1
   selector:
     matchLabels:
       app: usermanager
@@ -23,24 +24,3 @@ spec:
       - image: 566034038752.dkr.ecr.us-west-2.amazonaws.com/sykang/usermanager:latest
         imagePullPolicy: Always
         name: usermanager
----          
-apiVersion: autoscaling/v2beta2
-kind: HorizontalPodAutoscaler
-metadata:
-  name: usermanager
-spec:
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: usermanager
-  minReplicas: 2
-  maxReplicas: 4
-  metrics:
-    - type: Resource
-      resource:
-        name: cpu
-        target:
-          type: Utilization
-          # scale up if usage is above
-          # 99% of the requested CPU (100m)
-          averageUtilization: 99
