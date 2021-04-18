@@ -52,7 +52,7 @@ class UserManager():
     def kafka_listener(self, data):
     #   print("ordermanager:", data.value.decode("utf-8"))
         json_data = json.loads(data.value.decode("utf-8"))
-        url= 'http://user.flask-restapi/user/' + str(json_data['customer_id'])       
+        url= 'http://flask-restapi.user/user/' + str(json_data['customer_id'])       
         r = requests.get( url )
         
         if r.status_code != 200:
