@@ -7,12 +7,15 @@ import threading
 import json
 import logging
 logging.basicConfig(filename='debug.log',level=logging.DEBUG)
-from requests import status_codes
 import boto3
-import json
+from botocore.config import Config
 
-BOOTSTRAP_SERVERS = ['b-2.microservice-kafka-2.6lxf1h.c6.kafka.us-west-2.amazonaws.com:9094','b-1.microservice-kafka-2.6lxf1h.c6.kafka.us-west-2.amazonaws.com:9094']
-cloudformation_client = boto3.client('cloudformation')
+my_config = Config(
+    region_name='us-west-2',
+)
+#t = get_secret()
+#print(DATABASE_CONFIG)
+cloudformation_client = boto3.client('cloudformation', config=my_config)
 response = cloudformation_client.describe_stacks(
     StackName='MicroserviceCDKVPC'
 )
@@ -23,15 +26,16 @@ for output in outputs:
     if keyName == "mskbootstriapbrokers":
         ParameterKey = output["OutputValue"]
 
-ssm_client = boto3.client('ssm')
+print( ParameterKey )
+ssm_client = boto3.client('ssm', config=my_config)
 response = ssm_client.get_parameter(
     Name=ParameterKey
 )
 BOOTSTRAP_SERVERS = response['Parameter']['Value'].split(',')
-print( BOOTSTRAP_SERVERS )
+
  
 class UserManager():
-    producer = KafkaProducer(acks=0, compression_type='gzip',security_protocol="SSL" ,bootstrap_servers=BOOTSTRAP_SERVERS, value_serializer=lambda v: json.dumps(v, sort_keys=True).encode('utf-8')) 
+    producer = KafkaProducer(bootstrap_servers=BOOTSTRAP_SERVERS, security_protocol="SSL")    
     ret_fin = 0
     ret_message = ''
 
@@ -100,5 +104,11 @@ class UserManager():
 if __name__ == '__main__':
 #    OrderManager.register_kafka_listener('orderkafka')
 #   app.run(host="0.0.0.0", port=5052,debug=True)
-    usermanager = UserManager()
-    usermanager.register_kafka_listener('userkafka')
+    usermanager1 = UserManager()
+    usermanager1.register_kafka_listener('userkafka')
+    usermanager2 = UserManager()
+    usermanager2.register_kafka_listener('userkafka')
+    usermanager3 = UserManager()
+    usermanager3.register_kafka_listener('userkafka')
+    usermanager4 = UserManager()
+    usermanager4.register_kafka_listener('userkafka')
