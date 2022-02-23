@@ -84,9 +84,9 @@ class UserManager():
             return;  
 
         ret_json = json.loads(r.content)
-        if ret_json['money'] - ( json_data['count'] * json_data['price']) < 0 :
-            self.sendkafka("orderkafka", json_data, "fail-lack-kafka-user") 
-            return;
+    #    if ret_json['money'] - ( json_data['count'] * json_data['price']) < 0 :
+    #        self.sendkafka("orderkafka", json_data, "fail-lack-kafka-user") 
+    #        return;
 
         ret_json['money'] -= (json_data['count'] * json_data['price'])
         ret_json = json.dumps(ret_json)

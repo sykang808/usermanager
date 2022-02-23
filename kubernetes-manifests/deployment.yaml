@@ -42,7 +42,7 @@ spec:
     kind: Deployment
     name: usermanager
   minReplicas: 1
-  maxReplicas: 12
+  maxReplicas: 32
   metrics:
     - type: Resource
       resource:
